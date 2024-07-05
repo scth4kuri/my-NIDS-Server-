@@ -94,7 +94,6 @@ sudo nano /etc/snort/rules/local.rules
 ```
 **Add the following rule:**
 ```sh
-Copy code
 alert icmp any any -> $HOME_NET any (msg:"ICMP test detected"; sid:1000001; rev:1;)
 ```
 Run Snort in test mode:
