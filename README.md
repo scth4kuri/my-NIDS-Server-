@@ -41,9 +41,69 @@ This project involves setting up a Network Intrusion Detection System (NIDS) usi
    - Power on the Raspberry Pi and follow the on-screen instructions to complete the initial setup.
 
 ### Step 2: Update and Upgrade
-
-Open the terminal on your Raspberry Pi and run the following commands:
-
 ```sh
 sudo apt-get update
 sudo apt-get upgrade
+```
+Open the terminal on your Raspberry Pi and run the following commands:
+
+### Step 3: Install Snort
+
+Install dependencies:
+```sh
+sudo apt-get install -y build-essential libpcap-dev libpcre3-dev libdumbnet-dev bison flex
+```
+
+### Step 4: Download and install Snort
+```sh
+cd /tmp
+wget https://www.snort.org/downloads/snort/snort-2.9.15.tar.gz
+tar -xvzf snort-2.9.15.tar.gz
+cd snort-2.9.15
+./configure
+make
+sudo make install
+```
+
+### Step 4: Configure Snort
+Create directories for Snort configuration and logs:
+
+```sh
+sudo mkdir /etc/snort
+sudo mkdir /var/log/snort
+sudo mkdir /usr/local/lib/snort_dynamicrules
+
+echo Copy the configuration files to snort files:
+sudo cp etc/* /etc/snort/
+```
+### Step 5: Edit the snort.conf file:
+
+```sh
+sudo nano /etc/snort/snort.conf
+
+var HOME_NET 192.168.1.0/24
+echo Uncomment and set the rule path:
+
+include $RULE_PATH/local.rules
+```
+### Step 6: Test Snort
+Create a simple test rule:
+```sh
+Copy code
+sudo nano /etc/snort/rules/local.rules
+```
+**Add the following rule:**
+```sh
+Copy code
+alert icmp any any -> $HOME_NET any (msg:"ICMP test detected"; sid:1000001; rev:1;)
+```
+Run Snort in test mode:
+```sh
+sudo snort -T -c /etc/snort/snort.conf
+```
+### Step 6: Run Snort
+
+Start Snort to monitor network traffic:
+```sh
+sudo snort -A console -q -c /etc/snort/snort.conf -i eth0
+```
